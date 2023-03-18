@@ -59,6 +59,8 @@ static void master(std::vector<std::string> args)
   std::string path;
   for (const auto* l : links)
     path += (path.empty() ? "" : ", ") + std::string("link '") + l->get_name() + std::string("'");
+    
+    
   XBT_INFO("Path from Tremblay to Fafard before changing the latency of one link: %s (latency: %fs).", path.c_str(), lat);
   links[0]->set_latency("0.1s");
   
@@ -68,7 +70,9 @@ static void master(std::vector<std::string> args)
   
  for (const auto* l : links)
     path += (path.empty() ? "" : ", ") + std::string("link '") + l->get_name() + std::string("'");
+    
   XBT_INFO("Path from Tremblay to Fafard after changing the latency of one link: %s (latency: %fs).", path.c_str(), lat);
+  
   long duration          = std::stol(args[1]);
   double compute_cost       = std::stod(args[2]);
   double communication_cost = std::stod(args[3]);
@@ -87,16 +91,13 @@ static void master(std::vector<std::string> args)
      //->get_name()
      for (unsigned int i = 0; i < host_count; i++)
      {
-     
      XBT_INFO("host name - %s",host_list[i]->get_cname());
-     
      }
-     for (int i = 0; i < 10; i++) {
+     for (int i = 0; i < 12; i++) {
     XBT_INFO("Fafard: %.0fMflops, Jupiter: %4.0fMflops, Tremblay: %3.1fMflops)",
              fafard->get_speed() * fafard->get_available_speed() / 1000000,
              jupiter->get_speed() * jupiter->get_available_speed() / 1000000,
              Tremblay->get_speed() * Tremblay->get_available_speed() / 1000000);
-    sg4::this_actor::sleep_for(1);
   }
 
    simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(0));
@@ -107,12 +108,9 @@ static void master(std::vector<std::string> args)
    int temp=100;
    simgrid::s4u::ActorPtr actor;
    
-   //actor_list[i] 
-   //actor  = 
+   
    simgrid::s4u::Actor::create(worker_rank,host_list[i],&my_actor, temp,i);
-   //aid_t actor_id =  actor_list[i].get_pid();
-   //XBT_INFO("Actor id:%ld",actor_id);
-  // workers.push_back(simgrid::s4u::Mailbox::by_name(mailbox_name));
+
    XBT_INFO("Actor number - %d",i);
   }
   
@@ -120,31 +118,16 @@ static void master(std::vector<std::string> args)
   XBT_INFO("Workers size: %ld ",workers.size());
   
  double start_time= e->get_clock();
- mailbox->put(new double(compute_cost), communication_cost);
+ //mailbox->put(new double(compute_cost), communication_cost);
  for (int i = 0; e->get_clock() - start_time < duration ; i++) 
   { 
-   // std::string worker_rank          = std::to_string(i % workers.size());
-    //XBT_INFO("task: %d ",i);
-    //std::string mailbox_name = std::to_string(0);
-    
-   // std::string mailbox_name         = worker_rank;
-    
-   // simgrid::s4u::Mailbox* mailbox   = simgrid::s4u::Mailbox::by_name(mailbox_name);
-    
     XBT_INFO("Sending task %d to mailbox '%s'", i, mailbox->get_cname());
     mailbox->put(new double(compute_cost), communication_cost);
   }
 
   XBT_INFO("All tasks have been dispatched. Request all workers to stop.");
- // for (unsigned int i = 0; i < workers.size(); i++) 
-  //{
-   // std::string mailbox_name = std::to_string(0);
-    
-   // simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(mailbox_name);
 
-   // mailbox->put(new double(-1.0), 0);
-  //}
- sg4::Actor::kill_all();
+  sg4::Actor::kill_all();
   sg4::this_actor::exit();
 }
 

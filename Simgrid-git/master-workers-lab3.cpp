@@ -33,6 +33,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
 
     if (compute_cost > 0)
       simgrid::s4u::this_actor::execute(compute_cost);
+      
 
   } while (compute_cost > 0); 
 
@@ -106,7 +107,8 @@ static void master(std::vector<std::string> args)
 
     mailbox->put(new double(-1.0), 0);
   }
-  
+  //sg4::Actor::kill_all();
+  //sg4::this_actor::exit();
 }
 
 

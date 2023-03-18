@@ -19,6 +19,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
 //{
  void my_actor(int temp,int i)
 {
+  simgrid::s4u::Host* my_host      = simgrid::s4u::this_actor::get_host();
   //xbt_assert(args.size() == 1, "The worker expects no argument");
 
  // simgrid::s4u::Host* my_host      = simgrid::s4u::this_actor::get_host();
@@ -36,7 +37,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
     {
       simgrid::s4u::this_actor::execute(compute_cost);
      // XBT_INFO("task assigned to actor :%d",i);
-}
+    }
   } while (compute_cost > 0); 
 
   XBT_INFO("Exiting now.");
@@ -74,7 +75,7 @@ static void master(std::vector<std::string> args)
      XBT_INFO("host name - %s",host_list[i]->get_cname());
      
      }
-     for (int i = 0; i < 10; i++) {
+     for (int i = 0; i < 2; i++) {
     XBT_INFO("Fafard: %.0fMflops, Jupiter: %4.0fMflops, Tremblay: %3.1fMflops)",
              fafard->get_speed() * fafard->get_available_speed() / 1000000,
              jupiter->get_speed() * jupiter->get_available_speed() / 1000000,
@@ -119,19 +120,17 @@ static void master(std::vector<std::string> args)
   }
 
   XBT_INFO("All tasks have been dispatched. Request all workers to stop.");
- // for (unsigned int i = 0; i < workers.size(); i++) 
+ //for (unsigned int i = 0; i < workers.size(); i++) 
   //{
    // std::string mailbox_name = std::to_string(0);
     
-   // simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(mailbox_name);
+   //  mailbox = simgrid::s4u::Mailbox::by_name(mailbox_name);
 
-   // mailbox->put(new double(-1.0), 0);
+    //mailbox->put(new double(-1.0), 0);
   //}
  sg4::Actor::kill_all();
   sg4::this_actor::exit();
 }
-
-
 
 int main(int argc, char* argv[])
 {

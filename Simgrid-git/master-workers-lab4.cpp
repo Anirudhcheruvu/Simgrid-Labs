@@ -34,7 +34,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
 
     if (compute_cost > 0)
       simgrid::s4u::this_actor::execute(compute_cost);
-
+       //XBT_INFO("Task done,%d",i);
   } while (compute_cost > 0); 
 
   XBT_INFO("Exiting now.");
@@ -72,7 +72,7 @@ static void master(std::vector<std::string> args)
      XBT_INFO("host name - %s",host_list[i]->get_cname());
      
      }
-     for (int i = 0; i < 10; i++) {
+     for (int i = 0; i < 2; i++) {
     XBT_INFO("Fafard: %.0fMflops, Jupiter: %4.0fMflops, Tremblay: %3.1fMflops)",
              fafard->get_speed() * fafard->get_available_speed() / 1000000,
              jupiter->get_speed() * jupiter->get_available_speed() / 1000000,
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
   e.load_deployment(argv[2]);
      std::vector<simgrid::s4u::Host*> host_list = e.get_all_hosts();
      host_list[5]->set_speed_profile(simgrid::kernel::profile::ProfileBuilder::from_string("host1_profile", R"(0 0.1)",50))->seal();
-
+    
 	
   /* Run the simulation */
   e.run();

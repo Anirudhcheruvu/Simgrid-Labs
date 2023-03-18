@@ -17,6 +17,8 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
 //{
  void my_actor(int temp,int i)
 {
+ aid_t temp1 = simgrid::s4u::this_actor::get_pid();
+  XBT_INFO("pid: %ld ",temp1);
   //xbt_assert(args.size() == 1, "The worker expects no argument");
 
  // simgrid::s4u::Host* my_host      = simgrid::s4u::this_actor::get_host();

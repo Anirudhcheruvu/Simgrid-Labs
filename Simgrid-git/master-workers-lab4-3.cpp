@@ -72,6 +72,7 @@ static void master(std::vector<std::string> args)
  for (const auto* l : links)
     path += (path.empty() ? "" : ", ") + std::string("link '") + l->get_name() + std::string("'");
   XBT_INFO("Path from Tremblay to Fafard after changing the latency of one link: %s (latency: %fs).", path.c_str(), lat);
+  
   long duration          = std::stol(args[1]);
   double compute_cost       = std::stod(args[2]);
   double communication_cost = std::stod(args[3]);
@@ -90,16 +91,14 @@ static void master(std::vector<std::string> args)
      //->get_name()
      for (unsigned int i = 0; i < host_count; i++)
      {
-     
      XBT_INFO("host name - %s",host_list[i]->get_cname());
-     
      }
      for (int i = 0; i < 10; i++) {
     XBT_INFO("Fafard: %.0fMflops, Jupiter: %4.0fMflops, Tremblay: %3.1fMflops)",
              fafard->get_speed() * fafard->get_available_speed() / 1000000,
              jupiter->get_speed() * jupiter->get_available_speed() / 1000000,
              Tremblay->get_speed() * Tremblay->get_available_speed() / 1000000);
-    sg4::this_actor::sleep_for(1);
+   // sg4::this_actor::sleep_for(1);
   }
 
    simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(0));
@@ -122,38 +121,33 @@ static void master(std::vector<std::string> args)
   
   XBT_INFO("Workers size: %ld ",workers.size());
   
- double start_time= e->get_clock();
- mailbox->put(new double(compute_cost), communication_cost);
- for (int i = 0; e->get_clock() - start_time < duration ; i++) 
-  { 
-   // std::string worker_rank          = std::to_string(i % workers.size());
-    //XBT_INFO("task: %d ",i);
-    //std::string mailbox_name = std::to_string(0);
-    
-   // std::string mailbox_name         = worker_rank;
-    
-   // simgrid::s4u::Mailbox* mailbox   = simgrid::s4u::Mailbox::by_name(mailbox_name);
-    
-    XBT_INFO("Sending task %d to mailbox '%s'", i, mailbox->get_cname());
-    
+ 
+ 
+ for (int i = 0; i<90; i++) 
+  {
+     XBT_INFO("Sending task %d to mailbox '%s'", i, mailbox->get_cname());
+ 
     sg4::CommPtr comm = mailbox->put_async(new double(compute_cost), communication_cost);
     pending_comms.push_back(comm);
-    
-    //mailbox->put(new double(compute_cost), communication_cost);
   }
   
-    while (not pending_comms.empty()) {
+  XBT_INFO("All tasks have been dispatched. Request all workers to stop.");
+  
+  double start_time= e->get_clock();
+  int j=0;
+  
+    while (not pending_comms.empty() or e->get_clock() - start_time < duration) {
     ssize_t changed_pos = sg4::Comm::wait_any(pending_comms);
     pending_comms.erase(pending_comms.begin() + changed_pos);
     if (changed_pos != 0)
-      XBT_INFO("Remove the %zdth pending comm: it terminated earlier than another comm that was initiated first.",
-               changed_pos);
+    {
+      XBT_INFO("Remove the %zdth pending comm Number : %d",changed_pos,j);
+      j++;
+    }
   }
-
   
   
-
-  XBT_INFO("All tasks have been dispatched. Request all workers to stop.");
+  
  // for (unsigned int i = 0; i < workers.size(); i++) 
   //{
    // std::string mailbox_name = std::to_string(0);

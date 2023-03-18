@@ -19,6 +19,7 @@ static void master(std::vector<std::string> args)
   double compute_cost       = std::stod(args[2]);
   double communication_cost = std::stod(args[3]);
   std::vector<simgrid::s4u::Mailbox*> workers;
+  
   for (unsigned int i = 4; i < args.size(); i++)
     workers.push_back(simgrid::s4u::Mailbox::by_name(args[i]));
 

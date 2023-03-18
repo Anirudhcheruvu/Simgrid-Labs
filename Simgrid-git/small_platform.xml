@@ -9,6 +9,9 @@
     <host id="Bourassa" speed="48.492Mf"/>
     <host id="Jacquelin" speed="137.333Mf"/>
     <host id="Boivin" speed="98.095Mf"/>
+    
+    
+   
 
     <link id="6" bandwidth="41.279125MBps" latency="59.904us"/>
     <link id="3" bandwidth="34.285625MBps" latency="514.433us"/>

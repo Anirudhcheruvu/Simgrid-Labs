@@ -18,14 +18,14 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(s4u_app_masterworker, "Messages specific for this e
 
 //static void my_actor(int temp,int actor_id,std::vector<simgrid::s4u::ActorPtr> actor_list)
 //{
- void my_actor(std::string my_host,int i)
+ void my_actor(aid_t host_pid,std::string my_host,int i)
 {
   //xbt_assert(args.size() == 1, "The worker expects no argument");
 
  // simgrid::s4u::Host* my_host      = simgrid::s4u::this_actor::get_host();
  //simgrid::s4u::this_actor::get_ppid()
   //std::string worker_rank = ;
-  simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(0));
+  simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(host_pid));
 
   double compute_cost;
   do {
@@ -80,29 +80,25 @@ static void master(std::vector<std::string> args)
      XBT_INFO("host name - %s",host_list[i]->get_cname());
      
      }
-     for (int i = 0; i < 10; i++) {
+     for (int i = 0; i < 2; i++) {
     XBT_INFO("Fafard: %.0fMflops, Jupiter: %4.0fMflops, Tremblay: %3.1fMflops)",
              fafard->get_speed() * fafard->get_available_speed() / 1000000,
              jupiter->get_speed() * jupiter->get_available_speed() / 1000000,
              Tremblay->get_speed() * Tremblay->get_available_speed() / 1000000); 
-    //sg4::this_actor::sleep_for(1);
+    
   }
-
-   simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(0)); 
+    aid_t host_pid =  simgrid::s4u::this_actor::get_pid();
+   simgrid::s4u::Mailbox* mailbox = simgrid::s4u::Mailbox::by_name(std::to_string(host_pid)); 
 	
   for (unsigned int i = 0; i < host_count; i++) 
   { 
    std::string worker_rank  = std::to_string(i);
-   int temp=100;
+   
    simgrid::s4u::ActorPtr actor;
    
-   //actor_list[i] 
-   //actor  = 
-   simgrid::s4u::Actor::create(worker_rank,host_list[i],&my_actor,my_host,i);
-   //aid_t actor_id =  actor_list[i].get_pid();
-   //XBT_INFO("Actor id:%ld",actor_id);
-  // workers.push_back(simgrid::s4u::Mailbox::by_name(mailbox_name));
-  // XBT_INFO("Actor number - %d",i);
+   
+   simgrid::s4u::Actor::create(worker_rank,host_list[i],&my_actor,host_pid,my_host,i);
+   
   }
   
   
